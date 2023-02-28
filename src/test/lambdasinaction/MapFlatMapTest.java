@@ -19,7 +19,12 @@ public class MapFlatMapTest {
                 new Customer(103, "peter", "peter@gmail.com", Arrays.asList("38946328654", "3286487236")),
                 new Customer(104, "kely", "kely@gmail.com", Arrays.asList("389246829364", "948609467"))
         );
-        //email주소 목록 List<String>
+
+        // List.of 로 생성하는 Collection은 Immutable로, add 불가
+        //customers.add(new Customer(105, "john", "john@gmail.com", Arrays.asList("397937955", "21654725")));
+
+
+                //email주소 목록 List<String>
         List<String> emailList = customers.stream()  //Stream<Customer>
                 .map(cust -> cust.getEmail()) //Stream<String>
                 .collect(toList());//List<String>
@@ -31,15 +36,16 @@ public class MapFlatMapTest {
                 .collect(toList())
                 .forEach(System.out::println);
 
+
         //map() : <R> Stream<R> map(Function<? super T,? extends R> mapper)
-        List<List<String>> phoneList = customers.stream() //Stream<Customer>
-                .map(cust -> cust.getPhoneNumbers()) //Stream<List<String>>
+        List<List<String>> phoneList = customers.stream()   //Stream<Customer>
+                .map(cust -> cust.getPhoneNumbers())        //Stream<List<String>>
                 .collect(toList()); //List<List<String>>
         System.out.println("phoneList = " + phoneList);
 
         //flatMap : <R> Stream<R> flatMap(Function<? super T,? extends Stream<? extends R>> mapper)
-        List<String> phoneList2 = customers.stream() //Stream<Customer>
-                .flatMap(customer -> customer.getPhoneNumbers().stream())   //Stream<Stream<List<String>>>
+        List<String> phoneList2 = customers.stream()                        //Stream<Customer>
+                .flatMap(customer -> customer.getPhoneNumbers().stream())   //Stream<String>
                 .collect(toList());
         System.out.println("phoneList2 = " + phoneList2);
 

@@ -1,8 +1,9 @@
 package lambdasinaction._02stream.collect;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.*;
 
 public class _01GroupingTransactions {
 
@@ -22,7 +23,8 @@ public class _01GroupingTransactions {
     public static void main(String ... args) {
         groupImperatively();
         groupFunctionally();
-
+        groupByCurrencySum();
+        groupByCurrencyGrater5000();
     }
 
     private static void groupImperatively() {
@@ -42,11 +44,28 @@ public class _01GroupingTransactions {
 
     //Java8 groupingBy 사용
     private static void groupFunctionally() {
+        Map<Currency, List<Transaction>> currencyListMap = transactions.stream()
+                .collect(groupingBy(Transaction::getCurrency));
+        System.out.println(currencyListMap);
+    }
 
-
+    // 각 트랜잭션을 통화별로 그루핑한 뒤에 해당 통화의 모든 트랜잭션 합계를 계산
+    public static void groupByCurrencySum() {
+        Map<Currency, Double> map = transactions.stream()
+                .collect(groupingBy(Transaction::getCurrency, summingDouble(Transaction::getValue)));
+        System.out.println(map);
 
     }
 
+    // 각 트랜잭션을 통화별로 그룹화 한 뒤 각 트랜잭션이 5000 이상일 경우를 구분하여 리스트로 반환
+    public static void groupByCurrencyGrater5000() {
+        Map<Currency, Map<Boolean, List<Transaction>>> map = transactions.stream()
+                .collect(groupingBy(Transaction::getCurrency, partitioningBy(t -> t.getValue() >= 5000)));
+        System.out.println("groupByCurrencyGrater5000");
+        System.out.println(map);
+
+
+    }
     public static class Transaction {
         private final Currency currency;
         private final double value;

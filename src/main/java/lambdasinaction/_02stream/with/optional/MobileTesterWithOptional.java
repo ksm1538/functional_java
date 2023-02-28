@@ -1,5 +1,7 @@
 package lambdasinaction._02stream.with.optional;
 
+import lambdasinaction._02stream.basic1.Dish;
+
 import java.util.Optional;
 
 public class MobileTesterWithOptional {
@@ -14,10 +16,28 @@ public class MobileTesterWithOptional {
 		int width = mService.getMobileScreenWidth(Optional.of(mobile));
 		System.out.println("Apple iPhone 6s Screen Width = " + width);
 
-		Mobile mobile2 = new Mobile(2015001, "Apple", "iPhone 6s", Optional.empty());		
+		// Optional의 ifPresent() 사용
+		Optional<ScreenResolution> resolutionOptional = dfeatures.getResolution();
+		resolutionOptional.ifPresent(screenResolution -> {
+			int widthValue = screenResolution.getWidth();
+			System.out.println(widthValue);
+		});
+
+		// Optional orElse()
+		ScreenResolution screenResolution = resolutionOptional.orElse(new ScreenResolution(0,0));
+		width = screenResolution.getWidth();
+
+		Mobile mobile2 = new Mobile(2015001, "Apple", "iPhone 6s", Optional.empty());
 		int width2 = mService.getMobileScreenWidth(Optional.of(mobile2));
 		System.out.println("Apple iPhone 16s Screen Width = " + width2);
-		
+
+		// orElseGet()
+		Optional<DisplayFeatures> optionalDisplayFeatures = mobile2.getDisplayFeatures();
+		DisplayFeatures displayFeatures = optionalDisplayFeatures.orElseGet(() -> new DisplayFeatures("0", Optional.empty()));
+		System.out.println(displayFeatures.getSize());
+
+		// orElseThrow()
+		displayFeatures = optionalDisplayFeatures.orElseThrow(() -> new RuntimeException("NPE"));
 	}
 
 }
